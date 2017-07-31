@@ -41,11 +41,6 @@ router.route('/').get(function(req, res, next){
 });
 
 router.post('/', upload.single('feature'), function(req, res) {
-	feature: String,
-	content: String,
-	created_at: Schema.Types.Date,
-	updated_at: Schema.Types.Date,
-	comments
 		var content = req.body.content;
 		var feature = '/images/' + req.file.filename;
 		var created_at = Date.now();
