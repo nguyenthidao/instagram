@@ -26,28 +26,36 @@ router.get('/:id', function(req, res){
 		}
 	});
 });
+
 router.get('/:id/follows', function(req, res){
 	mongoose.model('User').findById(req.params.id, function(err, users){
 		if(err){
 			res.send(err);
 		}else{
-			var follows = {};
-			var follows_id = users.follows;
+			var follows = [];
+			var follows_id = users.followers;
 
-			follows_id.forEach(function(follow_id){
-				mongoose.model('User').findById(follow, function(err, follow){
-					if(err){
-						res.send(err);
-					}else{
-						follows.push(follow);
-					}
-				});
-			});
-
-			res.json({
-				follows: follows
+			mongoose.model('User').find({_id: {$in: follows_id}}, function(err, follows){
+				if(err){
+					res.send(err);
+				}else{
+					res.json({
+						follows: follows
+					});
+				}
 			});
 		}
 	});
 });
+
+router.get('/search', function(req, res){
+	mongoose.model('User').find({username: 'daont'}, function(err, users){
+		if(err){
+			res.send("j");
+		}else{
+			console.log("users");
+		}
+	});
+});
+
 module.exports = router;
