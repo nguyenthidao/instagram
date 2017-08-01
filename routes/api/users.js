@@ -12,20 +12,42 @@ router.get('/:id', function(req, res){
 			res.send(err);
 		}else{
 			res.json({
-				user: user
+				data: {
+					"id" : user._id,
+					"username": user.username,
+					"fullname": user.fullname,
+					"avatar": user.avatar,
+					"counts": {
+						"follows": user.followers.length,
+						"followed_by": user.following.length
+					}
+				}
 			});
 		}
 	});
 });
 router.get('/:id/follows', function(req, res){
-	mongoose.model('User').findById(req.params.id, function(err, user){
+	mongoose.model('User').findById(req.params.id, function(err, users){
 		if(err){
 			res.send(err);
 		}else{
+			var follows = {};
+			var follows_id = users.follows;
+
+			follows_id.forEach(function(follow_id){
+				mongoose.model('User').findById(follow, function(err, follow){
+					if(err){
+						res.send(err);
+					}else{
+						follows.push(follow);
+					}
+				});
+			});
+
 			res.json({
-				follows: user.follows
+				follows: follows
 			});
 		}
-	})
+	});
 });
 module.exports = router;
