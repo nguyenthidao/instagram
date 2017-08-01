@@ -6,122 +6,26 @@ var express = require('express'),
 	methodOverride = require('method-override')
 	;
 
-router.use(bodyParser.urlencoded())
-router.use(methodOverride(function (req, res) {
-  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-    var method = req.body._method
-    delete req.body._method
-    return method
-  }
-}));
-
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/images')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-});
-
-var upload = multer({ 
-	storage: storage 
-});
-
-router.route('/').get(function(req, res, next){
-		mongoose.model('User').find({}, function (err, user) {
-			if(err){
-				res.send(err);
-			}else{
-				res.json({
-					userList : user
-				});
-			}
-		});
-});
-
-router.post('/', upload.single('feature'), function(req, res) {
-		var username = req.body.username;
-		var fullname = req.body.fullname;
-		var password = req.body.password;
-		var short_description = req.body.short_description;
-		var avatar = '/images/' + req.file.filename;
-		var followers = [],
-		var created_at = Date.now();
-		var updated_at = Date.now();
-
-		mongoose.model('User').create({
-			
-			content : content,
-			feature : feature,
-			created_at : created_at,
-			updated_at : updated_at
-		}, function (err, user) {
-			if(err){
-				res.send(err);
-			}else{
-				res.json({
-					user: user
-				});
-			}
-		});
-});
-
-router.delete('/:id', function(req, res){
+router.get('/:id', function(req, res){
 	mongoose.model('User').findById(req.params.id, function(err, user){
 		if(err){
 			res.send(err);
 		}else{
-			post.remove(function(err, postID){
-				res.json({
-					message: 'deleted',
-					post:  postID
-				});
+			res.json({
+				user: user
 			});
 		}
 	});
-});	
-
-router.put('/:id', upload.single('feature'), function(req, res){
-    var title = req.body.title;
-	var content = req.body.content;
-	var feature = '/images/' + req.file.filename;
-	var created_at = Date.now();
-	var updated_at = Date.now();                          
-
-	mongoose.model('User').findById(req.params.id, function(err, post){
-		if(err){
-			res.send(err);
-		}else{
-			post.update({
-				title : title,
-				content : content,
-				feature : feature,
-				created_at : created_at,
-				updated_at : updated_at
-			}, function(err, postID){
-				if(err){
-					res.send(err);;
-				}else{
-					res.json({
-						message: 'edited',
-						post:  postID
-					});
-				}
-			});
-		}
-	})
 });
-
-router.get('/:id', function(req, res){
-	mongoose.model('User').findById(req.params.id, function(err, post){
+router.get('/:id/follows', function(req, res){
+	mongoose.model('User').findById(req.params.id, function(err, user){
 		if(err){
 			res.send(err);
 		}else{
 			res.json({
-				post: post
+				follows: user.follows
 			});
 		}
-	});
+	})
 });
 module.exports = router;
