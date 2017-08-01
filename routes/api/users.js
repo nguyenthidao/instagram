@@ -33,7 +33,7 @@ router.get('/:id/follows', function(req, res){
 			res.send(err);
 		}else{
 			var follows = [];
-			var follows_id = users.followers;
+			var follows_id = users.following;
 
 			mongoose.model('User').find({_id: {$in: follows_id}}, function(err, follows){
 				if(err){
