@@ -9,6 +9,7 @@ var users = new mongoose.Schema({
 	avatar: String,
 	followers: [Schema.Types.ObjectId],
 	following: [Schema.Types.ObjectId],
+	requesed_by: [Schema.Types.ObjectId],
 	posts:[]
 },{
 	collection: 'users'
